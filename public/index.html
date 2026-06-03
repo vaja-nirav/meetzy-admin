@@ -1,0 +1,44 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <link rel="icon" href="%PUBLIC_URL%/favicon.ico" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <meta name="theme-color" content="#0d0d1a" />
+    <meta name="description" content="Meetzy Admin Panel" />
+    <link rel="apple-touch-icon" href="%PUBLIC_URL%/logo192.png" />
+    <link rel="manifest" href="%PUBLIC_URL%/manifest.json" />
+    <title>Meetzy Admin</title>
+
+    <!-- Tailwind CSS CDN with custom Meetzy theme -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script>
+      tailwind.config = {
+        theme: {
+          extend: {
+            colors: {
+              'meetzy-bg':      '#0d0d1a',
+              'meetzy-sidebar': '#12122a',
+              'meetzy-card':    '#1a1a2e',
+              'meetzy-hover':   '#1f1f3a',
+              'meetzy-border':  '#2d2d4e',
+              'meetzy-purple':  '#7c3aed',
+              'meetzy-light':   '#9d6bf5',
+              'meetzy-green':   '#22c55e',
+              'meetzy-red':     '#ef4444',
+              'meetzy-orange':  '#f59e0b',
+              'meetzy-blue':    '#3b82f6',
+              'meetzy-gold':    '#eab308',
+              'meetzy-text':    '#e2e8f0',
+              'meetzy-muted':   '#94a3b8',
+            },
+          },
+        },
+      }
+    </script>
+  </head>
+  <body>
+    <noscript>You need to enable JavaScript to run this app.</noscript>
+    <div id="root"></div>
+  </body>
+</html>
