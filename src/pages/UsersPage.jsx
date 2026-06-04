@@ -39,11 +39,17 @@ function UserAvatar({ user, size = 'sm' }) {
   )
 }
 
-function StatusBadge({ status, isVip }) {
-  if (isVip) return <Badge variant="gold">👑 VIP</Badge>
+function StatusBadge({ status, isVip, isOnline }) {
+  // Banned takes priority; otherwise show real online/offline presence (+ VIP marker).
   if (status === 'banned') return <Badge variant="danger">Banned</Badge>
-  if (status === 'active') return <Badge variant="success">Active</Badge>
-  return <Badge variant="gray">Incomplete</Badge>
+  return (
+    <span className="inline-flex items-center gap-1.5">
+      <Badge variant={isOnline ? 'success' : 'gray'}>
+        {isOnline ? 'Online' : 'Offline'}
+      </Badge>
+      {isVip && <Badge variant="gold">👑 VIP</Badge>}
+    </span>
+  )
 }
 
 function BanModal({ isOpen, onClose, user, onSubmit, loading }) {
@@ -223,7 +229,7 @@ function UserDetailDrawer({ user, isOpen, onClose, onOpenModal }) {
           <h3 className="text-white font-bold text-xl mt-3">{user.displayName}</h3>
           <p className="text-meetzy-muted text-sm">{user.countryCode || '—'}</p>
           <div className="flex gap-2 mt-2 flex-wrap justify-center">
-            <StatusBadge status={user.status} isVip={user.isVip} />
+            <StatusBadge status={user.status} isVip={user.isVip} isOnline={user.isOnline} />
             {user.isProfileComplete ? (
               <Badge variant="success">Complete</Badge>
             ) : (
@@ -465,7 +471,7 @@ export default function UsersPage() {
     {
       key: 'status',
       header: 'Status',
-      render: (row) => <StatusBadge status={row.status} isVip={row.isVip} />,
+      render: (row) => <StatusBadge status={row.status} isVip={row.isVip} isOnline={row.isOnline} />,
     },
     {
       key: 'totalCalls',
