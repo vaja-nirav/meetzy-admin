@@ -275,8 +275,8 @@ export default function MosaicPage() {
     placeholderData: keepPreviousData,
   })
 
-  const entries = data?.data?.entries || []
-  const stats = data?.data?.stats || {}
+  const entries = data?.data || []
+  const stats = data?.stats || {}
 
   const invalidate = () => queryClient.invalidateQueries({ queryKey: ['mosaic'] })
 
@@ -342,10 +342,10 @@ export default function MosaicPage() {
   const openEditModal = (entry) => {
     setSelectedEntry(entry)
     setForm({
-      photoUrl: entry.photoUrl || '',
+      photoUrl: entry.photo_url || '',
       gender: entry.gender || '',
       status: entry.status || 'active',
-      showOnlineDot: entry.showOnlineDot ?? true,
+      showOnlineDot: entry.show_online_dot ?? true,
       order: entry.order ?? 0,
     })
     setPhotoTab('url')
@@ -474,12 +474,12 @@ export default function MosaicPage() {
               entries.map((entry) => (
                 <tr key={entry.id} className="border-b border-meetzy-border/50 hover:bg-meetzy-hover/50 transition-colors">
                   <td className="px-4 py-3">
-                    <PhotoCircle url={entry.photoUrl} />
+                    <PhotoCircle url={entry.photo_url} />
                   </td>
                   <td className="px-4 py-3"><GenderText gender={entry.gender} /></td>
                   <td className="px-4 py-3"><StatusBadge status={entry.status} /></td>
                   <td className="px-4 py-3 text-meetzy-text text-sm">{entry.order}</td>
-                  <td className="px-4 py-3 text-meetzy-muted text-sm">{formatFullDate(entry.createdAt)}</td>
+                  <td className="px-4 py-3 text-meetzy-muted text-sm">{formatFullDate(entry.created_at)}</td>
                   <td className="px-4 py-3">
                     <div className="flex items-center gap-1">
                       {entry.status === 'active' ? (
