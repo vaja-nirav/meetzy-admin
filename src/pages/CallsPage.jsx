@@ -303,7 +303,7 @@ export default function CallsPage() {
           <Pagination
             total={total}
             page={filters.page}
-            limit={20}
+            limit={10}
             onPageChange={(p) => setFilters((prev) => ({ ...prev, page: p }))}
           />
         </div>
