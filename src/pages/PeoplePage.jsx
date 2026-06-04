@@ -16,6 +16,9 @@ import { cn } from '../utils/cn'
 import Modal from '../components/ui/Modal'
 import ConfirmDialog from '../components/ui/ConfirmDialog'
 import LoadingSpinner from '../components/ui/LoadingSpinner'
+import Pagination from '../components/ui/Pagination'
+
+const PAGE_SIZE = 10
 
 const MAX_IMAGES = 6
 const DEFAULT_FORM = {
@@ -27,6 +30,7 @@ const DEFAULT_FORM = {
   languages: [],
   cover_images: [],
   status: 'active',
+  feed: 'popular',
   order: 0,
 }
 
@@ -227,6 +231,23 @@ function EntryFormModal({ isOpen, mode, form, setForm, countries, errors, onSubm
 
         <CoverImagesInput images={form.cover_images} onChange={(v) => set('cover_images', v)} error={errors.cover_images} />
 
+        {/* People-page tab the profile shows under */}
+        <div>
+          <label className="block text-meetzy-muted text-xs font-medium mb-2 uppercase tracking-wider">Show in tab</label>
+          <div className="flex gap-2">
+            {[
+              { key: 'popular', label: 'Popular', on: 'bg-meetzy-purple/20 border-meetzy-purple/40 text-meetzy-purple' },
+              { key: 'new', label: 'New', on: 'bg-pink-500/20 border-pink-500/40 text-pink-400' },
+            ].map((opt) => (
+              <button key={opt.key} type="button" onClick={() => set('feed', opt.key)}
+                className={cn('flex-1 py-2 rounded-xl text-sm font-medium border transition-colors',
+                  form.feed === opt.key ? opt.on : 'bg-meetzy-hover border-meetzy-border text-meetzy-muted')}>
+                {opt.label}
+              </button>
+            ))}
+          </div>
+        </div>
+
         <div className="flex items-center gap-6">
           <label className="flex items-center gap-2 cursor-pointer">
             <input type="checkbox" checked={form.blue_tick} onChange={(e) => set('blue_tick', e.target.checked)} className="w-4 h-4 accent-meetzy-purple" />
@@ -266,7 +287,7 @@ function EntryFormModal({ isOpen, mode, form, setForm, countries, errors, onSubm
 export default function PeoplePage() {
   const queryClient = useQueryClient()
 
-  const [filters, setFilters] = useState({ status: 'all', country_id: '', search: '', page: 1 })
+  const [filters, setFilters] = useState({ status: 'all', country_id: '', search: '', page: 1, limit: PAGE_SIZE })
   const [searchInput, setSearchInput] = useState('')
   const [addModalOpen, setAddModalOpen] = useState(false)
   const [editModalOpen, setEditModalOpen] = useState(false)
@@ -288,6 +309,7 @@ export default function PeoplePage() {
 
   const entries = data?.data || []
   const stats = data?.stats || {}
+  const total = data?.pagination?.total || 0
 
   const invalidate = () => queryClient.invalidateQueries({ queryKey: ['people'] })
 
@@ -326,6 +348,7 @@ export default function PeoplePage() {
       languages: entry.languages || [],
       cover_images: entry.cover_images || [],
       status: entry.status || 'active',
+      feed: entry.feed || 'popular',
       order: entry.order ?? 0,
     })
     setErrors({})
@@ -351,6 +374,7 @@ export default function PeoplePage() {
     about_me: form.about_me,
     languages: form.languages,
     cover_images: form.cover_images,
+    feed: form.feed,
     order: Number(form.order) || 0,
   })
 
@@ -381,6 +405,8 @@ export default function PeoplePage() {
         <StatPill label="● Active" value={stats.active} color="text-green-400" />
         <StatPill label="Inactive" value={stats.inactive} color="text-meetzy-red" />
         <StatPill label="Verified" value={stats.blue_tick} color="text-blue-400" />
+        <StatPill label="Popular" value={stats.popular} color="text-meetzy-purple" />
+        <StatPill label=" New" value={stats.new} color="text-pink-400" />
       </div>
 
       {/* Filters */}
@@ -398,7 +424,7 @@ export default function PeoplePage() {
             {countries.map((c) => <option key={c.id} value={c.id}>{c.flag} {c.name}</option>)}
           </select>
           <form onSubmit={onSearch} className="flex-1 min-w-[180px] flex gap-2">
-            <input value={searchInput} onChange={(e) => setSearchInput(e.target.value)} placeholder="🔍 Search by name…"
+            <input value={searchInput} onChange={(e) => setSearchInput(e.target.value)} placeholder="Search by name…"
               className="flex-1 px-4 py-2.5 bg-meetzy-hover border border-meetzy-border rounded-xl text-meetzy-text text-sm focus:border-meetzy-purple outline-none" />
             <button type="submit" className="px-5 py-2.5 bg-meetzy-purple hover:bg-purple-700 text-white rounded-xl text-sm font-medium transition-colors">Search</button>
           </form>
@@ -410,7 +436,7 @@ export default function PeoplePage() {
         <table className="w-full">
           <thead>
             <tr className="bg-meetzy-hover">
-              {['Photo', 'Name', 'Age', 'Country', 'Languages', 'Status', 'Created', 'Actions'].map((h) => (
+              {['Photo', 'Name', 'Age', 'Country', 'Languages', 'Tab', 'Status', 'Created', 'Actions'].map((h) => (
                 <th key={h} className="px-4 py-3 text-left text-xs text-meetzy-muted uppercase tracking-wider">{h}</th>
               ))}
             </tr>
@@ -419,14 +445,14 @@ export default function PeoplePage() {
             {isLoading ? (
               Array.from({ length: 5 }).map((_, i) => (
                 <tr key={i} className="border-b border-meetzy-border/50">
-                  {Array.from({ length: 8 }).map((__, j) => (
+                  {Array.from({ length: 9 }).map((__, j) => (
                     <td key={j} className="px-4 py-4"><div className="animate-pulse h-6 bg-meetzy-hover rounded" /></td>
                   ))}
                 </tr>
               ))
             ) : entries.length === 0 ? (
               <tr>
-                <td colSpan={8}>
+                <td colSpan={9}>
                   <div className="flex flex-col items-center justify-center py-16 gap-3 text-center">
                     <Sparkles size={40} className="text-meetzy-muted opacity-40" />
                     <div>
@@ -452,6 +478,14 @@ export default function PeoplePage() {
                   <td className="px-4 py-3 text-meetzy-text text-sm">{entry.age}</td>
                   <td className="px-4 py-3 text-meetzy-text text-sm">{entry.country ? `${entry.country.flag} ${entry.country.name}` : '—'}</td>
                   <td className="px-4 py-3 text-meetzy-muted text-sm">{(entry.languages || []).join(', ') || '—'}</td>
+                  <td className="px-4 py-3">
+                    <span className={cn('px-2.5 py-1 rounded-full text-xs font-medium border',
+                      entry.feed === 'new'
+                        ? 'bg-pink-500/20 text-pink-400 border-pink-500/30'
+                        : 'bg-meetzy-purple/20 text-meetzy-purple border-meetzy-purple/30')}>
+                      {entry.feed === 'new' ? 'New' : 'Popular'}
+                    </span>
+                  </td>
                   <td className="px-4 py-3"><StatusBadge status={entry.status} /></td>
                   <td className="px-4 py-3 text-meetzy-muted text-sm">{formatFullDate(entry.created_at)}</td>
                   <td className="px-4 py-3">
@@ -475,6 +509,13 @@ export default function PeoplePage() {
           </tbody>
         </table>
       </div>
+
+      <Pagination
+        total={total}
+        page={filters.page}
+        limit={PAGE_SIZE}
+        onPageChange={(p) => setFilters((f) => ({ ...f, page: p }))}
+      />
 
       <EntryFormModal isOpen={addModalOpen} mode="add" form={form} setForm={setForm} countries={countries} errors={errors} onSubmit={submitAdd} onClose={closeModals} loading={createMutation.isPending} />
       <EntryFormModal isOpen={editModalOpen} mode="edit" form={form} setForm={setForm} countries={countries} errors={errors} onSubmit={submitEdit} onClose={closeModals} loading={updateMutation.isPending} />
