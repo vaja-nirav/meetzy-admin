@@ -14,10 +14,10 @@ import { formatDate, getInitials, getAvatarColor } from '../utils/format'
 import { cn } from '../utils/cn'
 
 const TABS = [
-  { key: 'pending', label: '🟡 Pending' },
-  { key: 'reviewed', label: '🔵 Reviewed' },
-  { key: 'resolved', label: '✅ Resolved' },
   { key: 'all', label: 'All' },
+  { key: 'pending', label: 'Pending' },
+  { key: 'reviewed', label: 'Reviewed' },
+  { key: 'resolved', label: 'Resolved' },
 ]
 
 const REASON_VARIANTS = {
