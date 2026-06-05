@@ -15,6 +15,7 @@ import ConfigPage from './pages/ConfigPage'
 import BlockedPage from './pages/BlockedPage'
 import MosaicPage from './pages/MosaicPage'
 import PeoplePage from './pages/PeoplePage'
+import VideosPage from './pages/VideosPage'
 
 const queryClient = new QueryClient({
   defaultOptions: {
@@ -50,6 +51,7 @@ export default function App() {
             <Route path="/blocked" element={<BlockedPage />} />
             <Route path="/mosaic" element={<MosaicPage />} />
             <Route path="/people" element={<PeoplePage />} />
+            <Route path="/videos" element={<VideosPage />} />
           </Route>
           <Route path="*" element={<Navigate to="/dashboard" replace />} />
         </Routes>

@@ -2,7 +2,7 @@ import { NavLink } from 'react-router-dom'
 import {
   LayoutDashboard, Users, Video, Flag,
   Wallet, Radio, Crown, Settings, Ban,
-  LogOut, Zap, Image, Sparkles,
+  LogOut, Zap, Image, Sparkles, Film,
 } from 'lucide-react'
 import { motion, AnimatePresence } from 'framer-motion'
 import toast from 'react-hot-toast'
@@ -21,6 +21,7 @@ const navItems = [
   { path: '/blocked', icon: Ban, label: 'Blocked Users' },
   { path: '/mosaic', icon: Image, label: 'Login Mosaic' },
   { path: '/people', icon: Sparkles, label: 'People' },
+  { path: '/videos', icon: Film, label: 'Videos' },
 ]
 
 export default function Sidebar({ isOpen, onClose }) {
