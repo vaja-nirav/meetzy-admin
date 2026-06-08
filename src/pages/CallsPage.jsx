@@ -77,7 +77,7 @@ function ReasonBadge({ reason }) {
 
 export default function CallsPage() {
   const queryClient = useQueryClient()
-  const [filters, setFilters] = useState({ search: '', dateFrom: '', dateTo: '', page: 1 })
+  const [filters, setFilters] = useState({ search: '', dateFrom: '', dateTo: '', page: 1, limit: 10 })
   const [pendingFilters, setPendingFilters] = useState({ search: '', dateFrom: '', dateTo: '' })
   const [expandedRow, setExpandedRow] = useState(null)
   const [terminateTarget, setTerminateTarget] = useState(null)
@@ -187,7 +187,7 @@ export default function CallsPage() {
             className="flex-1 min-w-[180px] px-4 py-2.5 bg-meetzy-hover border border-meetzy-border rounded-xl text-meetzy-text text-sm focus:border-meetzy-purple outline-none"
           />
           <button
-            onClick={() => setFilters({ ...pendingFilters, page: 1 })}
+            onClick={() => setFilters({ ...pendingFilters, page: 1, limit: 10 })}
             className="px-5 py-2.5 bg-meetzy-purple hover:bg-purple-700 text-white rounded-xl text-sm font-medium transition-colors"
           >
             Apply
@@ -230,7 +230,7 @@ export default function CallsPage() {
                       onClick={() => setExpandedRow(expandedRow === idx ? null : idx)}
                       className="border-b border-meetzy-border/50 hover:bg-meetzy-hover transition-colors cursor-pointer"
                     >
-                      <td className="px-4 py-4 text-meetzy-muted text-sm">{idx + 1}</td>
+                      <td className="px-4 py-4 text-meetzy-muted text-sm">{(filters.page - 1) * filters.limit + idx + 1}</td>
                       <td className="px-4 py-4">
                         <div className="flex items-center gap-2">
                           <UserAvatar user={call.userA} />
